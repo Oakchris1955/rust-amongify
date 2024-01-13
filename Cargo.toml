@@ -1,0 +1,20 @@
+[package]
+name = "rust-amongify"
+version = "0.1.0"
+edition = "2021"
+
+
+[[bin]]
+name = "amongify"
+path = "src/main.rs"
+
+[profile.release]
+# Some options to reduce binary size
+strip = true        # Automatically strip symbols from the binary.
+lto = true          # Perform link time optimization
+codegen-units = 1   # Use 1 codegen unit for maximum size reduction optimizations
+
+
+[dependencies]
+clap = { version = "4.4.16", features = ["derive"] }
+rand = "0.8.5"
