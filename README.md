@@ -21,6 +21,7 @@ Arguments:
   <string>  Input string to ඞ sussify ඞ
 
 Options:
-  -s, --sus <sussiness>  How ඞ sus ඞ you want the output string to be [default: 1]
-  -h, --help             Print help
+  -s, --sus <sussiness>          How ඞ sus ඞ you want the output string to be [default: 1]
+      --max-sus <max-sussiness>  Set a new upper limit for how ඞ sus ඞ the output string can be [default: 10]
+  -h, --help                     Print help
 ```
