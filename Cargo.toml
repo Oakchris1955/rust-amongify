@@ -2,6 +2,7 @@
 name = "rust-amongify"
 version = "0.1.0"
 edition = "2021"
+authors = ["Oakchris1955"]
 
 
 [[bin]]
@@ -18,3 +19,5 @@ codegen-units = 1   # Use 1 codegen unit for maximum size reduction optimization
 [dependencies]
 clap = { version = "4.4.16", features = ["derive"] }
 rand = "0.8.5"
+regex = "1.10.2"
+text_io = "0.1.12"
