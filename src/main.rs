@@ -55,7 +55,10 @@ struct Args {
     ultra_sus_mode: bool,
 
     /// Skip all safety checks when running ULTRA ඞ SUS ඞ MODE™️
-    /// Doing so may result in void warranty
+    ///
+    /// WARNING: This will make the program ultra ඞ sus ඞ.
+    /// By running this you accept the possibility that a specialised Interpol unit
+    /// may be deployed near your location because you are being ultra ඞ sus ඞ
     #[arg(short = 'y')]
     skip_checks: bool,
 }

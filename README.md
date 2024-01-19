@@ -52,7 +52,9 @@ Options:
           Activate the ULTRA ඞ SUS ඞ MODE™️. I sure hope you know what you are doing
 
   -y
-          Skip all safety checks when running ULTRA ඞ SUS ඞ MODE™️ Doing so may result in void warranty
+          Skip all safety checks when running ULTRA ඞ SUS ඞ MODE™️
+          
+          WARNING: This will make the program ultra ඞ sus ඞ. By running this you accept the possibility that a specialised Interpol unit may be deployed near your location because you are being ultra ඞ sus ඞ
 
   -h, --help
           Print help (see a summary with '-h')
