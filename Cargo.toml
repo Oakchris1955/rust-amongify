@@ -3,7 +3,9 @@ name = "rust-amongify"
 version = "0.1.0"
 edition = "2021"
 authors = ["Oakchris1955"]
-
+description = "A very ඞ sus ඞ program"
+license = "MIT"
+repository = "https://github.com/Oakchris1955/rust-amongify"
 
 [[bin]]
 name = "amongify"
