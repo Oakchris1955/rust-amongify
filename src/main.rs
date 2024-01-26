@@ -1,7 +1,7 @@
 use clap::{error as clap_error, CommandFactory, Parser};
-use rand::Rng;
-use regex::RegexBuilder;
-use std::process::exit;
+use rand::{rngs::ThreadRng, Rng};
+use regex::{Regex, RegexBuilder};
+use std::{io::stdin, process::exit};
 use text_io::read;
 
 // A very sus char
@@ -23,7 +23,7 @@ const LONG_ABOUT: &'static str = concat!(
     "\n",
     "\x1B[1m\x1B[4mULTRA ඞ SUS ඞ MODE™️\x1B[0m",
     "\n",
-    "\x1B[4mPlease be very careful when you are using the ULTRA ඞ SUS ඞ MODE™️. ",
+    "\x1b[4mPlease be very careful when you are using the ULTRA ඞ SUS ඞ MODE™️. ",
     "Incorrect usage of it can result in mass hysteria, false vacuum decay or/and an ധK-Class scenario\x1B[24m\n",
     "\n",
     "Replaces all occurences of the word \"sus\" (lowercase and uppercase) with ඞ. ",
@@ -40,7 +40,7 @@ const LONG_ABOUT: &'static str = concat!(
 struct Args {
     /// Input string to ඞ sussify ඞ
     #[arg(value_name = "string")]
-    input: String,
+    input: Option<String>,
 
     /// How ඞ sus ඞ you want the output string to be
     #[arg(short, long = "sus", default_value_t = DEFAULT_SUSSINESS, value_name = "sussiness")]
@@ -69,29 +69,13 @@ fn value_validation_err(msg: impl std::fmt::Display) -> ! {
         .exit()
 }
 
-fn main() {
-    // Parse arguments
-    let args = Args::parse();
-
-    // Retrieve a lazily-initialized thread-local RNG
-    let mut rng = rand::thread_rng();
-
-    // Do some bound checking
-    if args.sussiness > args.max_sussiness {
-        value_validation_err(format!(
-            "Provided sussiness value {} is out of range (max {})",
-            args.sussiness, args.max_sussiness
-        ))
-    }
-
-    if args.max_sussiness <= 0 {
-        value_validation_err(concat!(
-            "Looks like you are pretty ඞ sus ඞ. \n",
-            "You tried setting the denominator of the n/m division to 0, didn't you?"
-        ))
-    }
-
-    let mut output_string: String = args.input;
+fn sussify(mut input: String, args: &Args, rng: &mut ThreadRng) -> String {
+    // Before doing anything, LOCATE ALL ANSI CONTROL/ESCAPE CODES
+    //
+    // Note: I am pretty sure this RegEx doesn't catch every ANSI escape code.
+    // If you find such a case, please file an issue at https://github.com/Oakchris1955/rust-amongify/issues
+    let re = Regex::new(r"\x1B\[.*?[A-Za-z]").unwrap();
+    input = re.replace_all(&input, "").to_string();
 
     // In case we are in ULTRA ඞ SUS ඞ MODE™️, prompt the user
     // just to make sure they didn't trigger it by accident
@@ -114,15 +98,13 @@ fn main() {
             .build()
             .unwrap();
 
-        output_string = re
-            .replace_all(&output_string, SUS_CHAR.to_string())
-            .to_string();
+        input = re.replace_all(&input, SUS_CHAR.to_string()).to_string();
     }
 
     // Loop through each character on input string
     // and replace them with SUS_CHAR, according to the sussiness parameter
     // Note: special characters, such as carriage return (CR) won't be replaced
-    output_string = output_string
+    input = input
         .chars()
         .map(|char| {
             if rng.gen_ratio(args.sussiness, args.max_sussiness)
@@ -139,7 +121,7 @@ fn main() {
     // Again, if we are in ULTRA ඞ SUS ඞ MODE™️, and there are exactly 69 or 420 ඞ characters,
     // just print a text indicating something is pretty sus and exit (code 0)
     if args.ultra_sus_mode {
-        match output_string.matches(&SUS_CHAR.to_string()).count() {
+        match input.matches(&SUS_CHAR.to_string()).count() {
             69 => {
                 println!("You are too sus to be sus");
                 exit(0)
@@ -158,6 +140,53 @@ fn main() {
         }
     }
 
-    // Print processed string
-    println!("{}", output_string);
+    input
+}
+
+fn read_stdin_to_line() -> String {
+    let mut output = String::new();
+    stdin().read_line(&mut output).unwrap();
+
+    output
+}
+
+fn main() {
+    // Parse arguments
+    let args = Args::parse();
+
+    // Retrieve a lazily-initialized thread-local RNG
+    let mut rng = rand::thread_rng();
+
+    // Do some bound checking
+    if args.sussiness > args.max_sussiness {
+        value_validation_err(format!(
+            "Provided sussiness value {} is out of range (max {})",
+            args.sussiness, args.max_sussiness
+        ))
+    }
+
+    if args.max_sussiness <= 0 {
+        value_validation_err(concat!(
+            "Looks like you are pretty ඞ sus ඞ. \n",
+            "You tried setting the denominator of the n/m division to 0, didn't you?"
+        ))
+    }
+
+    let mut read_from_input = || loop {
+        let line = read_stdin_to_line();
+        if line.len() == 0 {
+            println!("");
+            break;
+        }
+        print!("{}", sussify(line, &args, &mut rng));
+    };
+
+    // If not input string was supplied or it is equal to "-", read from stdin until EOF
+    match args.input.clone() {
+        Some(input) => match input.trim() {
+            "-" => read_from_input(),
+            _ => println!("{}", sussify(input, &args, &mut rng)),
+        },
+        None => read_from_input(),
+    }
 }
