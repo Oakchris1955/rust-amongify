@@ -74,8 +74,8 @@ fn sussify(mut input: String, args: &Args, rng: &mut ThreadRng) -> String {
     //
     // Note: I am pretty sure this RegEx doesn't catch every ANSI escape code.
     // If you find such a case, please file an issue at https://github.com/Oakchris1955/rust-amongify/issues
-    let re = Regex::new(r"\x1B\[.*?[A-Za-z]").unwrap();
-    input = re.replace_all(&input, "").to_string();
+    let re = Regex::new(r"\x1B\[.*[A-Za-z]").unwrap();
+    let ranges = re.find_iter(&input).map(|f| f.range()).collect::<Vec<_>>();
 
     // In case we are in ULTRA ඞ SUS ඞ MODE™️, prompt the user
     // just to make sure they didn't trigger it by accident
@@ -106,10 +106,12 @@ fn sussify(mut input: String, args: &Args, rng: &mut ThreadRng) -> String {
     // Note: special characters, such as carriage return (CR) won't be replaced
     input = input
         .chars()
-        .map(|char| {
+        .enumerate()
+        .map(|(i, char)| {
             if rng.gen_ratio(args.sussiness, args.max_sussiness)
                 && !char.is_control()
                 && char != SUS_CHAR
+                && !ranges.iter().any(|range| range.contains(&i))
             {
                 SUS_CHAR
             } else {
