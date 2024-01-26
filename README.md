@@ -12,9 +12,16 @@ Before using this program, it would be good to know what the ULTRA ඞ SUS ඞ M
 
 ## Installation
 
-1) Make sure you have Rust and Cargo installed
-2) Clone this repo using Git
-3) `cd` to the cloned dir and run `cargo build --release` to build the executable at `./target/release/`
+Make sure you have Rust and Cargo installed
+
+### For everyday usage
+
+`cargo install amongify`
+
+### For contributing
+
+1) Clone this repo using Git
+2) `cd` to the cloned dir and run `cargo build --release` to build the executable at `./target/release/`
 
 ## Usage
 
